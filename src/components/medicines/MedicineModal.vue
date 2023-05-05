@@ -42,6 +42,8 @@ export default defineComponent({
 
       // TODO: save medicine
       console.log('Guardando...')
+      medicine.value.createdAt = new Date().toISOString()
+      emit('save', JSON.stringify(medicine.value))
 
       isLoading.value = false
     }

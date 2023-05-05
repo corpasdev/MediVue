@@ -1,13 +1,15 @@
 <script lang="ts">
-import { ref, computed, defineComponent } from 'vue'
+import { ref, computed, defineComponent, type PropType } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { maxLength, required, numeric } from '@vuelidate/validators'
 import type { MedicalOrder } from '@/types/medical-orders'
+import type { Medicine } from '@/types/medicines'
 
 export default defineComponent({
   name: 'MedicalOrderModal',
   props: {
-    isOpen: { type: Boolean, required: true }
+    isOpen: { type: Boolean, required: true },
+    medicines: { type: Array as PropType<Medicine[]>, require: true }
   },
   emits: ['save', 'hide'],
   setup(props, { emit }) {
@@ -23,6 +25,7 @@ export default defineComponent({
     })
 
     const isModalOpen = computed(() => props.isOpen)
+    const medicineOptions = computed(() => props.medicines)
     const rules = computed(() => ({
       name: { required },
       lastName: { required },
@@ -44,6 +47,8 @@ export default defineComponent({
       isLoading.value = true
 
       // TODO: save order
+      order.value.createdAt = new Date().toISOString()
+      emit('save', JSON.stringify(order.value))
       console.log('Guardando...')
 
       isLoading.value = false
@@ -60,6 +65,7 @@ export default defineComponent({
       isLoading,
       isModalOpen,
       handleSaveMO,
+      medicineOptions,
       handleAddMedicine
     }
   }
@@ -144,9 +150,9 @@ export default defineComponent({
               <div class="select is-fullwidth">
                 <select>
                   <option selected>Seleccione una opción</option>
-                  <option>Medicamento 1</option>
-                  <option>Medicamento 2</option>
-                  <option>Medicamento 3</option>
+                  <option v-for="(medicine, idx) in medicineOptions" :key="idx" :value="medicine">
+                    {{ medicine.name }}
+                  </option>
                 </select>
               </div>
               <div class="icon is-small is-left">
@@ -210,9 +216,9 @@ export default defineComponent({
           <button class="button is-primary is-fullwidth" @click="handleSaveMO">Guardar</button>
         </div>
       </div>
-    </div>
-    <div class="close" @click="() => emit('hide')">
-      <i class="fa fa-times"></i>
+      <div class="close" @click="() => emit('hide')">
+        <i class="fa fa-times"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -225,6 +231,7 @@ export default defineComponent({
   left: 0;
   right: 0;
   display: flex;
+  align-items: center;
   justify-content: center;
   background-color: #000000da;
   z-index: 9999;
@@ -232,14 +239,18 @@ export default defineComponent({
 
 .custom-modal {
   background-color: white;
+  position: relative;
   height: 880px;
   width: 1200px;
-  margin-top: 10%;
   padding: 40px 0;
   border-radius: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .close {
-  margin: 10.5% 0 0 -25px;
+  position: absolute;
+  top: 15px;
+  right: 20px;
   cursor: pointer;
 }
 

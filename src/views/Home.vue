@@ -4,19 +4,70 @@ import LoadingSkeleton from '../components/shared/LoadingSkeleton.vue'
 import MedicalOrderModal from '../components/medical-orders/MedicalOrderModal.vue'
 import CustomTable from '../components/shared/CustomTable.vue'
 import Welcome from '../components/common/Welcome.vue'
+import { useOrder } from '../composable/useOrder'
+import { useMedicine } from '../composable/useMedicine'
+import type { MedicalOrder } from '@/types/medical-orders'
+import type { Medicine } from '@/types/medicines'
+import type { BaseColumn } from '@/types/shared'
+
+const { getOrders, createOrder } = useOrder()
+const { getMedicines } = useMedicine()
 
 let isLoading = ref(false)
 let isModalOpen = ref(false)
-
+let medicines = ref<Medicine[]>([])
+const rows = ref<MedicalOrder[]>([])
+const columns = ref<BaseColumn[]>([
+  {
+    label: 'Nombre',
+    field: 'name'
+  },
+  {
+    label: 'Apellido',
+    field: 'lastName'
+  },
+  {
+    label: 'Identificación',
+    field: 'idNumber'
+  },
+  {
+    label: 'EPS',
+    field: 'eps'
+  },
+  {
+    label: '#Medicinas',
+    field: 'medicines'
+  },
+  {
+    label: 'Comentarios',
+    field: 'comments'
+  },
+  {
+    label: 'Encargado',
+    field: 'doctorSignature'
+  }
+])
 const range = ref({ start: null, end: null })
 
-const getMedicalOrders = () => {
-  // isLoading.value = true
+const getRecords = async () => {
+  isLoading.value = true
+  const response = await getOrders()
+  medicines.value = await getMedicines()
+  rows.value = response
+  isLoading.value = false
 }
 
-const handleAddOrder = () => {}
+const handleAddOrder = async (order: string) => {
+  try {
+    await createOrder(JSON.parse(order) as MedicalOrder)
+    isModalOpen.value = false
+    getRecords()
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-// getMedicalOrders()
+getRecords()
 </script>
 
 <template>
@@ -57,11 +108,12 @@ const handleAddOrder = () => {}
 
     <div class="column is-12">
       <LoadingSkeleton v-if="isLoading" />
-      <CustomTable v-else :cols="[]" :rows="[]" />
+      <CustomTable v-else :cols="columns" :rows="rows" :has-medicines="true" />
     </div>
 
     <MedicalOrderModal
       :is-open="isModalOpen"
+      :medicines="medicines"
       @hide="isModalOpen = !isModalOpen"
       @save="handleAddOrder"
     />
