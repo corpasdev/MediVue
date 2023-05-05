@@ -1,6 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-const test = ref(false)
+import LoadingSkeleton from '../components/shared/LoadingSkeleton.vue'
+
+const range = ref({ start: null, end: null })
+
+let isLoading = ref(true)
+
+const getMedicalOrders = () => {
+  isLoading.value = true
+}
+
+const handleAddOrder = () => {}
+
+// getMedicalOrders()
 </script>
 
 <template>
@@ -36,7 +48,7 @@ const test = ref(false)
       </VDatePicker>
     </div>
     <div class="column is-7 has-text-right">
-      <button class="button is-primary" @click="test = true">
+      <button class="button is-primary" @click="handleAddOrder">
         <span class="icon mr-1"> <i class="fa fa-plus"></i> </span> Agregar
       </button>
     </div>
@@ -44,7 +56,9 @@ const test = ref(false)
     <!-- Table (This will be a component) -->
     <!-- TODO: add a button to download the pdf -->
     <div class="column is-12">
+      <LoadingSkeleton v-if="isLoading" />
       <vue-good-table
+        v-else
         :columns="[]"
         :rows="[]"
         :sort-options="{
