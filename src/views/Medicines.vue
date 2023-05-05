@@ -4,17 +4,60 @@ import LoadingSkeleton from '../components/shared/LoadingSkeleton.vue'
 import MedicineModal from '../components/medicines/MedicineModal.vue'
 import CustomTable from '../components/shared/CustomTable.vue'
 import Welcome from '../components/common/Welcome.vue'
+import { useMedicine } from '../composable/useMedicine'
+import type { Medicine } from '@/types/medicines'
+import type { BaseColumn } from '@/types/shared'
+
+const { getMedicines, createMedicine } = useMedicine()
 
 let isLoading = ref(false)
 let isModalOpen = ref(false)
+const rows = ref<Medicine[]>([])
+const columns = ref<BaseColumn[]>([
+  {
+    label: 'Nombre',
+    field: 'name'
+  },
+  {
+    label: 'Descripción',
+    field: 'description'
+  },
+  {
+    label: 'Fecha Creación',
+    field: 'createdAt'
+  },
+  {
+    label: 'Cantidad',
+    field: 'qty'
+  },
+  {
+    label: 'Proveedor',
+    field: 'provider'
+  },
+  {
+    label: 'Encargado',
+    field: 'doctorSignature'
+  }
+])
 
-const getMedicines = () => {
-  // isLoading.value = true
+const getRecords = async () => {
+  isLoading.value = true
+  const response = await getMedicines()
+  rows.value = response
+  isLoading.value = false
 }
 
-const handleAddMedicine = () => {}
+const handleAddMedicine = async (medicine: string) => {
+  try {
+    await createMedicine(JSON.parse(medicine) as Medicine)
+    isModalOpen.value = false
+    getRecords()
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-// getMedicines()
+getRecords()
 </script>
 
 <template>
@@ -32,7 +75,7 @@ const handleAddMedicine = () => {}
 
     <div class="column is-12">
       <LoadingSkeleton v-if="isLoading" />
-      <CustomTable v-else :cols="[]" :rows="[]" />
+      <CustomTable v-else :cols="columns" :rows="rows" />
     </div>
 
     <MedicineModal

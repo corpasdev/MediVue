@@ -9,17 +9,20 @@ export default defineComponent({
   props: {
     cols: { type: Array as PropType<BaseColumn[]>, required: true },
     rows: { type: Array as PropType<MedicalOrder[] | Medicine[]>, required: true },
+    hasMedicines: { type: Boolean, required: false },
     emptyMessage: { type: String, required: false }
   },
   setup(props) {
     const colsInfo = computed(() => props.cols)
     const rowsInfo = computed(() => props.rows)
     const emptyState = computed(() => props.emptyMessage)
+    const showMedicines = computed(() => props.hasMedicines)
 
     return {
       colsInfo,
       rowsInfo,
-      emptyState
+      emptyState,
+      showMedicines
     }
   }
 })
@@ -50,6 +53,11 @@ export default defineComponent({
       allLabel: 'Todas'
     }"
   >
+    <template #table-row="_props">
+      <div v-if="showMedicines && _props.column.field == 'medicines'">
+        {{ _props.row.medicines.map((e: any) => e.name).join(', ') || "No tiene medicamentos" }}
+      </div>
+    </template>
     <template #emptystate>{{ emptyState ?? 'No hay datos disponibles para mostrar' }}</template>
   </vue-good-table>
 </template>
