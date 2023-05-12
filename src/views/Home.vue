@@ -1,121 +1,238 @@
-<script setup lang="ts">
+<script setup>
+import img1 from '../assets/slider.jpg'
+import img2 from '../assets/slider1.jpg'
+import img3 from '../assets/slider2.jpg'
+import img4 from '../assets/blog2.jpg'
+import img5 from '../assets/blog3.jpg'
+
+
+
+import 'boxicons'
+import Button from '../components/common/Button.vue'
 import { ref } from 'vue'
-import LoadingSkeleton from '../components/shared/LoadingSkeleton.vue'
-import MedicalOrderModal from '../components/medical-orders/MedicalOrderModal.vue'
-import CustomTable from '../components/shared/CustomTable.vue'
-import Welcome from '../components/common/Welcome.vue'
-import { useOrder } from '../composable/useOrder'
-import { useMedicine } from '../composable/useMedicine'
-import type { MedicalOrder } from '@/types/medical-orders'
-import type { Medicine } from '@/types/medicines'
-import type { BaseColumn } from '@/types/shared'
-
-const { getOrders, createOrder } = useOrder()
-const { getMedicines } = useMedicine()
-
-let isLoading = ref(false)
-let isModalOpen = ref(false)
-let medicines = ref<Medicine[]>([])
-const rows = ref<MedicalOrder[]>([])
-const columns = ref<BaseColumn[]>([
-  {
-    label: 'Nombre',
-    field: 'name'
-  },
-  {
-    label: 'Apellido',
-    field: 'lastName'
-  },
-  {
-    label: 'Identificación',
-    field: 'idNumber'
-  },
-  {
-    label: 'EPS',
-    field: 'eps'
-  },
-  {
-    label: '#Medicinas',
-    field: 'medicines'
-  },
-  {
-    label: 'Comentarios',
-    field: 'comments'
-  },
-  {
-    label: 'Encargado',
-    field: 'doctorSignature'
-  }
-])
-const range = ref({ start: null, end: null })
-
-const getRecords = async () => {
-  isLoading.value = true
-  const response = await getOrders()
-  medicines.value = await getMedicines()
-  rows.value = response
-  isLoading.value = false
-}
-
-const handleAddOrder = async (order: string) => {
-  try {
-    await createOrder(JSON.parse(order) as MedicalOrder)
-    isModalOpen.value = false
-    getRecords()
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-getRecords()
+const showMenu = ref(false)
 </script>
-
 <template>
-  <div class="columns is-multiline">
-    <div class="column is-12 mt-5 mb-6">
-      <Welcome message="Bienvenid@ David P. Avila" />
-    </div>
+  <main>
+    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button
+          type="button"
+          data-bs-target="#myCarousel"
+          data-bs-slide-to="0"
+          class="active bg-dark"
+          aria-label="Diapositiva 1"
+          aria-current="true"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#myCarousel"
+          data-bs-slide-to="1"
+          aria-label="Diapositiva 2"
+          class="bg-dark"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#myCarousel"
+          data-bs-slide-to="2"
+          aria-label="Diapositiva 3"
+          class="bg-dark"
+        ></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img :src="img1" class="d-block w-100" alt="">
 
-    <div class="column is-5">
-      <VDatePicker v-model="range" is-range :masks="{ input: 'DD/MM/YYYY' }">
-        <template #default="{ inputValue, inputEvents }">
-          <div class="field has-addons">
-            <div class="control">
-              <input class="input" :value="inputValue.start" v-on="inputEvents.start" />
-            </div>
-            <div class="control">
-              <button class="button is-primary">
-                <span class="icon"> <i class="fa fa-arrow-right"></i> </span>
-              </button>
-            </div>
-            <div class="control">
-              <input class="input" :value="inputValue.end" v-on="inputEvents.end" />
-            </div>
-            <div class="control">
-              <button class="button is-primary">
-                <span class="icon mr-2"> <i class="fa fa-search"></i> </span> Consultar
-              </button>
+          <div class="container">
+            <div class="carousel-caption text-start">
+              <h1>
+                <font style="vertical-align: inherit"
+                  ><font class="text-primary fw-bold" style="vertical-align: inherit">Bienvenido Doctor.</font></font
+                >
+              </h1>
+              <p>
+                <font style="vertical-align: inherit"
+                  ><font class="text-muted" style="vertical-align: inherit"
+                    >Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea quas corporis doloremque esse perferendis, ex quam maxime sapiente, commodi laboriosam iure, animi perspiciatis illum nulla quae. Quod praesentium tempore error
+                    </font
+                  ></font
+                >
+              </p>
+              <p>
+                <a class="btn btn-lg btn-primary" href="#"
+                  ><font style="vertical-align: inherit"
+                    ><font style="vertical-align: inherit">Regístrese hoy</font></font
+                  ></a
+                >
+              </p>
             </div>
           </div>
-        </template>
-      </VDatePicker>
-    </div>
-    <div class="column is-7 has-text-right">
-      <button class="button is-primary" @click="isModalOpen = true">
-        <span class="icon mr-1"> <i class="fa fa-plus"></i> </span> Agregar
+        </div>
+        <div class="carousel-item">
+          <img :src="img2" class="d-block w-100" alt="">
+
+          <div class="container">
+            <div class="carousel-caption text-start">
+              <h1>
+                <font style="vertical-align: inherit"
+                  ><font class="text-primary fw-bold" style="vertical-align: inherit">Bienvenido Doctor.</font></font
+                >
+              </h1>
+              <p>
+                <font style="vertical-align: inherit"
+                  ><font class="text-muted" style="vertical-align: inherit"
+                    >Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea quas corporis Lorem, ipsum dolor.</font
+                  ></font
+                >
+              </p>
+              <p>
+                <a class="btn btn-lg btn-primary" href="#"
+                  ><font style="vertical-align: inherit"
+                    ><font style="vertical-align: inherit">Regístrese hoy</font></font
+                  ></a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img :src="img3" class="d-block w-100" alt="">
+
+          <div class="container">
+            <div class="carousel-caption text-start">
+              <h1>
+                <font style="vertical-align: inherit"
+                  ><font class="text-primary fw-bold" style="vertical-align: inherit">Bienvenido Doctor.</font></font
+                >
+              </h1>
+              <p>
+                <font style="vertical-align: inherit"
+                  ><font class="text-muted" style="vertical-align: inherit"
+                    >Lorem ipsum dolor sit amet cons Lorem ipsum dolor sit amet.</font
+                  ></font
+                >
+              </p>
+              <p>
+                <a class="btn btn-lg btn-primary" href="#"
+                  ><font style="vertical-align: inherit"
+                    ><font style="vertical-align: inherit">Regístrese hoy</font></font
+                  ></a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#myCarousel"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon bg-primary" aria-hidden="true"></span>
+        <span class="visually-hidden"
+          ><font style="vertical-align: inherit"
+            ><font style="vertical-align: inherit">el anterior</font></font
+          ></span
+        >
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#myCarousel"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon bg-primary" aria-hidden="true"></span>
+        <span class="visually-hidden"
+          ><font style="vertical-align: inherit"
+            ><font style="vertical-align: inherit">el siguiente</font></font
+          ></span
+        >
       </button>
     </div>
 
-    <div class="column is-12">
-      <LoadingSkeleton v-if="isLoading" />
-      <CustomTable v-else :cols="columns" :rows="rows" :has-medicines="true" />
-    </div>
+    <!-- Marketing messaging and featurettes
+================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
 
-    <MedicalOrderModal
-      :is-open="isModalOpen"
-      :medicines="medicines"
-      @hide="isModalOpen = !isModalOpen"
-      @save="handleAddOrder"
-    />
-  </div>
+    <div class="container marketing mb-5">
+      <!-- Three columns of text below the carousel -->
+      <!-- /.row -->
+
+      <!-- START THE FEATURETTES -->
+
+      <hr class="featurette-divider" />
+
+      <div class="row featurette">
+        <div class="col-md-7">
+          <h2 class="featurette-heading">
+            <font style="vertical-align: inherit"
+              ><font style="vertical-align: inherit">Primer título destacado. </font></font
+            ><span class="text-muted"
+              ><font style="vertical-align: inherit"
+                ><font style="vertical-align: inherit">¡Va a sorprenderte por completo!</font></font
+              ></span
+            >
+          </h2>
+          <p class="lead">
+            <font style="vertical-align: inherit"
+              ><font style="vertical-align: inherit"
+                >Lorem ipsum dolor sit amet.</font
+              ><font style="vertical-align: inherit"
+                >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptates facere vero quidem!
+                 </font
+              ><font style="vertical-align: inherit"
+                >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Optio rerum reprehenderit iure, dicta quos aliquid delectus earum a unde dolore?</font
+              ><font style="vertical-align: inherit"
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit.</font
+              ></font
+            >
+          </p>
+        </div>
+        <div class="col-md-5">
+          <img :src="img4" alt="">
+          <title>Placeholder</title>
+        </div>
+      </div>
+
+      <hr class="featurette-divider" />
+
+      <div class="row featurette ">
+        <div class="col-md-7 order-md-2">
+          <h2 class="featurette-heading">
+            <font style="vertical-align: inherit"
+              ><font style="vertical-align: inherit">Oh sí, eso es bueno. </font></font
+            ><span class="text-muted"
+              ><font style="vertical-align: inherit"
+                ><font style="vertical-align: inherit">Ver por ti mismo.</font></font
+              ></span
+            >
+          </h2>
+          <p class="lead">
+            <font style="vertical-align: inherit"
+              ><font style="vertical-align: inherit"
+                >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta vel sequi perferendis, reprehenderit nihil recusandae deleniti eius fugiat, veritatis ipsa exercitationem ipsum! Quo id ea accusantium, totam dignissimos explicabo vel!</font
+              ></font
+            >
+          </p>
+        </div>
+        <div class="col-md-5 order-md-1">
+          <img :src="img5" alt="">
+            <title>Placeholder</title>
+           
+        </div>
+      </div>
+
+      <!-- /END THE FEATURETTES -->
+    </div>
+    <!-- /.container -->
+
+    <!-- FOOTER -->
+  </main>
 </template>
+
+<style scoped>
+.marketing p {
+  font-size: 1rem;
+}
+</style>
